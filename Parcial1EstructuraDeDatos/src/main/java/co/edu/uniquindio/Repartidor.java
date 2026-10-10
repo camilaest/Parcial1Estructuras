@@ -4,13 +4,13 @@ public class Repartidor {
     public String cedula;
     public String zona;
     public String nombre;
-    public boolean disponile;
+    public boolean disponible;
 
     public Repartidor(String cedula, String nombre, String zona, boolean disponile) {
         this.cedula = cedula;
         this.nombre = nombre;
         this.zona = zona;
-        this.disponile = disponile;
+        this.disponible = disponile;
     }
 
     public String getCedula() {
@@ -37,12 +37,12 @@ public class Repartidor {
         this.nombre = nombre;
     }
 
-    public boolean isDisponile() {
-        return disponile;
+    public boolean isDisponible() {
+        return disponible;
     }
 
-    public void setDisponile(boolean disponile) {
-        this.disponile = disponile;
+    public void setDisponible(boolean disponile) {
+        this.disponible = disponile;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class Repartidor {
                 "cedula='" + cedula + '\'' +
                 ", zona='" + zona + '\'' +
                 ", nombre='" + nombre + '\'' +
-                ", disponile=" + disponile +
+                ", disponile=" + disponible +
                 '}';
     }
 }

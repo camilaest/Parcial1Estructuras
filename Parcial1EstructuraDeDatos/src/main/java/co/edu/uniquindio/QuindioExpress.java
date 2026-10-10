@@ -15,9 +15,10 @@ public class QuindioExpress {
     private final Set<String> municipiosOrdenados;
 
     private final PriorityQueue<Paquete> despacharPaquetesPrioridad;
+    private final Queue<Paquete> ordenLlegada;
 
     //el historial es respetando el orden de entrega
-    private final Coleccion<Paquete> historialPaquetesEntregados;
+    private final Collection<Paquete> historialPaquetesEntregados;
 
     private final Map<String, Repartidor> mapaRepartidores;
 
@@ -25,17 +26,18 @@ public class QuindioExpress {
         this.listaPaquetesPendientes = new LinkedList<>();
         this.mapaPaquetes = new HashMap<>();
         this.municipios = new HashSet<>();
-        this.municipiosOrdenados = new TreeSet();
+        this.municipiosOrdenados = new TreeSet<>();
         this.despacharPaquetesPrioridad = new PriorityQueue<>(new ComparadorPorPrioridad());
-        this.historialPaquetesEntregados = new ListaSimple<>();
-        this.mapaRepartidores = new HashMap();
+        this.historialPaquetesEntregados = new ListaSimplementeEnlazada<>();
+        this.mapaRepartidores = new HashMap<>();
+        this.ordenLlegada = new LinkedList<>();
     }
 
     public List<Paquete> getListaPaquetesPendientes() {
         return listaPaquetesPendientes;
     }
 
-    public Coleccion<Paquete> getHistorialPaquetesEntregados() {
+    public Collection<Paquete> getHistorialPaquetesEntregados() {
         return historialPaquetesEntregados;
     }
 
@@ -67,6 +69,7 @@ public class QuindioExpress {
         mapaPaquetes.put(paquete.getCodigo(), paquete);
         listaPaquetesPendientes.add(paquete);
         despacharPaquetesPrioridad.add(paquete);
+        ordenLlegada.add(paquete);
         municipios.add(paquete.getDestino());
         municipiosOrdenados.add(paquete.getDestino());
 
@@ -114,11 +117,56 @@ public class QuindioExpress {
         Paquete paqueteAtendido = despacharPaquetesPrioridad.poll();
 
         if (paqueteAtendido != null) {
-            listaPaquetesPendientes.remove(paqueteAtendido);     // Lo remueve de pendientes
-            historialPaquetesEntregados.add(paqueteAtendido);
+            listaPaquetesPendientes.remove(paqueteAtendido);
+            ordenLlegada.remove(paqueteAtendido);
+            mapaPaquetes.remove(paqueteAtendido.getCodigo());
+
+            historialPaquetesEntregados.agregar(paqueteAtendido);
         }
 
         return paqueteAtendido;
+    }
+
+    public Paquete atenderPorOrdenLlegada() {
+        Paquete p = ordenLlegada.poll();
+        if (p != null) {
+            listaPaquetesPendientes.remove(p);
+            despacharPaquetesPrioridad.remove(p);
+        }
+        return p;
+    }
+
+    public void asignarYEntregarPaquete(String codigoPaquete, String cedulaRepartidor) {
+        Paquete paquete = mapaPaquetes.get(codigoPaquete);
+        if (paquete == null) {
+            throw new IllegalArgumentException("No existe un paquete con el código ingresado.");
+        }
+
+        Repartidor repartidor = mapaRepartidores.get(cedulaRepartidor);
+        if (repartidor == null) {
+            throw new IllegalArgumentException("No existe un repartidor con la cédula ingresada.");
+        }
+
+        if (!repartidor.isDisponible()) {
+            throw new IllegalStateException("El repartidor " + repartidor.getNombre() + " no está disponible.");
+        }
+
+        if (!repartidor.getZona().equalsIgnoreCase(paquete.getDestino())) {
+            throw new IllegalArgumentException("La zona del repartidor (" + repartidor.getZona() +
+                    ") no coincide con el destino del paquete (" + paquete.getDestino() + ").");
+        }
+
+        // Efectuar proceso de entrega
+        repartidor.setDisponible(false);
+
+        mapaPaquetes.remove(codigoPaquete);
+        listaPaquetesPendientes.remove(paquete);
+        ordenLlegada.remove(paquete);
+        despacharPaquetesPrioridad.remove(paquete);
+
+        historialPaquetesEntregados.agregar(paquete);
+
+        repartidor.setDisponible(true);
     }
 
 
