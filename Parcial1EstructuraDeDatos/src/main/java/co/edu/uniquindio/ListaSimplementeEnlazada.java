@@ -7,6 +7,11 @@ public class ListaSimplementeEnlazada<T> implements Collection<T>, Iterable<T> {
     private Nodo inicio;
     private int tam;
 
+    public ListaSimplementeEnlazada() {
+        this.inicio = null;
+        this.tam = 0;
+    }
+
     /**
      * Para cumplir con la condición de que no se acceda directamente a los nodos se crea la clase privada Nodo dentro de la lista que lo recorre.
      * ?????????????
@@ -68,12 +73,24 @@ public class ListaSimplementeEnlazada<T> implements Collection<T>, Iterable<T> {
 
     @Override
     public T obtener(int posicion) {
+        if (estaVacia()) {
+            throw new NoSuchElementException("No hay elementos en la lista");
+        }
+        Nodo aux = inicio;
+        int contador = 0;
+        while (aux != null && contador <= posicion) {
+            if(contador == posicion){
+                return aux.dato;
+            }
+            contador++;
+            aux = aux.siguiente;
+        }
         return null;
     }
 
     @Override
     public int cantidadElementos() {
-        return 0;
+        return tam;
     }
 
     /**
