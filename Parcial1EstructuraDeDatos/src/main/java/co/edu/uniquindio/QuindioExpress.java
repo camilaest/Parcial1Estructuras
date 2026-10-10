@@ -17,7 +17,7 @@ public class QuindioExpress {
     private final PriorityQueue<Paquete> despacharPaquetesPrioridad;
 
     //el historial es respetando el orden de entrega
-    private final List<Paquete> historialPaquetesEntregados;
+    private final Coleccion<Paquete> historialPaquetesEntregados;
 
     private final Map<String, Repartidor> mapaRepartidores;
 
@@ -27,7 +27,7 @@ public class QuindioExpress {
         this.municipios = new HashSet<>();
         this.municipiosOrdenados = new TreeSet();
         this.despacharPaquetesPrioridad = new PriorityQueue<>(new ComparadorPorPrioridad());
-        this.historialPaquetesEntregados = new ArrayList<>();
+        this.historialPaquetesEntregados = new ListaSimple<>();
         this.mapaRepartidores = new HashMap();
     }
 
@@ -35,7 +35,7 @@ public class QuindioExpress {
         return listaPaquetesPendientes;
     }
 
-    public List<Paquete> getHistorialPaquetesEntregados() {
+    public Coleccion<Paquete> getHistorialPaquetesEntregados() {
         return historialPaquetesEntregados;
     }
 
