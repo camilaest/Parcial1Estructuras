@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 public class AnalisisPaquetes {
+    /**
+     * Método recursivo que devuelve el peso total según el municipio ingresado
+     * @param paquetes Lista de paquetes
+     * @param municipio Municipio a considerar
+     * @return Peso total
+     */
     public static double pesoTotalPorMunicipio(List<Paquete> paquetes, String municipio) {
         return pesoTotalPorMunicipio(paquetes, municipio, 0);
     }
@@ -22,6 +28,14 @@ public class AnalisisPaquetes {
             return pesoTotalPorMunicipio(paquetes, municipio, posicion + 1);
         }
     }
+
+
+    /**
+     * Método recursivo que me determina el número de paquetes que tienen más o igual prioridad a la ingresada.
+     * @param paquetes Lista de paquetes
+     * @param prioridad Prioridad mínima a cumplir
+     * @return numero de paquetes
+     */
     public static int numeroPaquetesPrioridadMinima(List<Paquete> paquetes, int prioridad) {
         // Caso base: lista vacía, no hay nada que contar
         if (paquetes.isEmpty()) {
@@ -40,14 +54,17 @@ public class AnalisisPaquetes {
         return aporte + numeroPaquetesPrioridadMinima(cola,prioridad);
     }
 
-
+    /**
+     * Método divide y vencerás que devuelve el paquete con mayor peso de una lista de paquetes
+     * @param paquetes Lista de paquetes
+     * @return Paquete con más peso
+     */
     public static Paquete paqueteMayorPeso(List<Paquete> paquetes) {
         if (paquetes.isEmpty()) {
             throw new IllegalArgumentException("No hay paquetes");
         }
         return paqueteMayorPeso(paquetes, 0, paquetes.size() - 1);
     }
-
 
     private static Paquete paqueteMayorPeso(List<Paquete> paquetes, int inicio, int fin) {
         // Caso base: un solo elemento
@@ -68,7 +85,13 @@ public class AnalisisPaquetes {
         return mayorDer;
     }
 
-
+    /**
+     * Método de búsqueda binaria  que tiene como pre condición que los paquetes están ordenados según su código.
+     * @param ordenados Lista de paquetes ordenados por código
+     * @param codigo Código a buscar
+     * @return -1 si no se encuentra o si la lista está vacía o la posición en la que se encuentra el paquete
+     *
+     */
     public static int busquedaBinaria(List<Paquete> ordenados, String codigo) {
         return busquedaBinaria(ordenados, codigo, 0, ordenados.size() - 1);
     }
