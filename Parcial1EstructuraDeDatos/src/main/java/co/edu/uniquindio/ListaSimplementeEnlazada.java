@@ -69,8 +69,12 @@ public class ListaSimplementeEnlazada<T> implements Collection<T>, Iterable<T> {
         tam--;
     }
 
-
-
+    /**
+     * Método que me devuelve el elemento según la posición ingresada
+     * Verifica primero que la lista no esté vacía, si no lo está va iterando hasta encontrar el elemento
+     * @param posicion
+     * @return Elemento que está en la posición
+     */
     @Override
     public T obtener(int posicion) {
         if (estaVacia()) {
@@ -88,6 +92,10 @@ public class ListaSimplementeEnlazada<T> implements Collection<T>, Iterable<T> {
         return null;
     }
 
+    /**
+     * Método que devuelve la cantidad de elementos de la lista
+     * @return tamaño
+     */
     @Override
     public int cantidadElementos() {
         return tam;
@@ -151,5 +159,21 @@ public class ListaSimplementeEnlazada<T> implements Collection<T>, Iterable<T> {
             actual = actual.siguiente;
             return valor;
         }
+    }
+
+    public Nodo getInicio() {
+        return inicio;
+    }
+
+    public void setInicio(Nodo inicio) {
+        this.inicio = inicio;
+    }
+
+    public int getTam() {
+        return tam;
+    }
+
+    public void setTam(int tam) {
+        this.tam = tam;
     }
 }
