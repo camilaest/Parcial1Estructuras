@@ -42,16 +42,16 @@ public class AnalisisPaquetes {
             return 0;
         }
 
-        Paquete cabeza = paquetes.getFirst();
-        List<Paquete> cola = paquetes.subList(1, paquetes.size());   // todo menos la cabeza
+        Paquete head = paquetes.getFirst();
+        List<Paquete> tail = paquetes.subList(1, paquetes.size());   // todo menos la cabeza
 
         int aporte = 0;
-        if (cabeza.getPrioridad() >= prioridad) {
+        if (head.getPrioridad() >= prioridad) {
             aporte = 1;
         }
 
         // Caso recursivo: la cola es más pequeña, así puedo avanzar hacia el caso base
-        return aporte + numeroPaquetesPrioridadMinima(cola,prioridad);
+        return aporte + numeroPaquetesPrioridadMinima(tail,prioridad);
     }
 
     /**
