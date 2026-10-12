@@ -14,7 +14,6 @@ public class ListaSimplementeEnlazada<T> implements Collection<T>, Iterable<T> {
 
     /**
      * Para cumplir con la condición de que no se acceda directamente a los nodos se crea la clase privada Nodo dentro de la lista que lo recorre.
-     * ?????????????
      */
     private class Nodo{
         private T dato;

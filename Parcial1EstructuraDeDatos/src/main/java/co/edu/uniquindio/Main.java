@@ -222,8 +222,6 @@ public class Main {
     }
 
 
-
-
     // CARGA DE DATOS INICIALES (30 paquetes, 6 repartidores)
 
 
