@@ -259,6 +259,7 @@ public class Main {
                 "Obtener entregado por posición",
                 "Verificar si fue entregado",
                 "Mostrar historial completo",
+                "Eliminar paquete del historial",
                 "Volver"
         };
         boolean salir = false;
@@ -271,8 +272,33 @@ public class Main {
                 case 1 -> mostrarEntregadoPorPosicion(sistema);
                 case 2 -> verificarEntregado(sistema);
                 case 3 -> mostrarHistorialCompleto(sistema);
-                case 4, -1 -> salir = true;
+                case 4 -> eliminarDelHistorial(sistema);
+                case 5, -1 -> salir = true;
             }
+        }
+    }
+
+    private static void eliminarDelHistorial(QuindioExpress sistema) {
+        String codigo = JOptionPane.showInputDialog("Ingrese el código del paquete a eliminar del historial:");
+        if (codigo == null) return;
+
+        codigo = codigo.trim().toUpperCase();
+        if (codigo.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El código no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        
+        boolean eliminado = sistema.eliminarDelHistorial(codigo);
+
+        if (eliminado) {
+            JOptionPane.showMessageDialog(null,
+                    "El paquete " + codigo + " fue eliminado del historial correctamente.",
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "No se encontró el paquete " + codigo + " en el historial.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
