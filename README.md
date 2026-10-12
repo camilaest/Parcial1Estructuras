@@ -5,7 +5,8 @@
 Integrantes
 - Maria Camila Flórez Estrada - 1096033880
 - María Alejandra Pinzón Vanegas - 1126905118
- Descripción
+
+Descripción
 Sistema realizado en Java para gestionar las operaciones de un centro de
 distribución de paquetes en el Quindío: registro y consulta de paquetes
 y repartidores, despacho por orden de llegada o por prioridad, agrupación
