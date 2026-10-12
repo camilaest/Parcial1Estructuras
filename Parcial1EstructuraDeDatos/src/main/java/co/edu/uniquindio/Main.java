@@ -321,6 +321,7 @@ public class Main {
             JOptionPane.showMessageDialog(null,
                     "No se pudo eliminar la posición " + posicion + " del historial.",
                     "Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 
