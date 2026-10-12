@@ -28,8 +28,8 @@ public class Main {
                     6. Atender paquete por orden de llegada 
                     7. Despachar siguiente paquete prioritario 
                     8. Asignar paquete a repartidor y realizar entrega
-                    9. Demostrar ordenamientos alternativos ????
-                    10.Analisis
+                    9. Demostrar ordenamientos alternativos 
+                    10. Analisis
                     11. Historial
                     12. Salir
                     
@@ -279,25 +279,47 @@ public class Main {
     }
 
     private static void eliminarDelHistorial(QuindioExpress sistema) {
-        String codigo = JOptionPane.showInputDialog("Ingrese el código del paquete a eliminar del historial:");
-        if (codigo == null) return;
-
-        codigo = codigo.trim().toUpperCase();
-        if (codigo.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El código no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
+        int total = sistema.cantidadEntregados();
+        if (total == 0) {
+            JOptionPane.showMessageDialog(null, "El historial está vacío",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        
-        boolean eliminado = sistema.eliminarDelHistorial(codigo);
+        // Muestro el historial para que el usuario sepa qué posición elegir
+        String entrada = JOptionPane.showInputDialog(
+                "Historial:\n" + sistema.historialComoTexto()
+                        + "\n\nIngrese la posición a eliminar (0 a " + (total - 1) + "):");
+        if (entrada == null) return;
+
+        int posicion;
+        try {
+            posicion = Integer.parseInt(entrada.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar un número entero",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (posicion < 0 || posicion > total) {
+            JOptionPane.showMessageDialog(null,
+                    "La posición debe estar entre 0 y " + (total - 1),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Guardo el paquete antes de eliminarlo para mostrar su código
+        Paquete paquete = sistema.obtenerEntregado(posicion );
+        boolean eliminado = sistema.eliminarDelHistorial(posicion );
 
         if (eliminado) {
             JOptionPane.showMessageDialog(null,
-                    "El paquete " + codigo + " fue eliminado del historial correctamente.",
+                    "El paquete " + paquete.getCodigo() + " (posición " + posicion
+                            + ") fue eliminado del historial correctamente.",
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null,
-                    "No se encontró el paquete " + codigo + " en el historial.",
+                    "No se pudo eliminar la posición " + posicion + " del historial.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -152,13 +152,11 @@ public class QuindioExpress {
         return p;
     }
 
-    public boolean eliminarDelHistorial(String codigoPaquete) {
-        //Utilizamos un paquete auxiliar
-        Paquete paqueteABuscar = new Paquete();
-        paqueteABuscar.setCodigo(codigoPaquete);
+    public boolean eliminarDelHistorial(int posicionPaquete) {
+        Paquete p = historialPaquetesEntregados.obtener(posicionPaquete);
 
         try {
-            historialPaquetesEntregados.eliminar(paqueteABuscar);
+            historialPaquetesEntregados.eliminar(p);
             return true;
         } catch (NoSuchElementException e) {
             return false;
