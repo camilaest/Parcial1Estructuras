@@ -26,10 +26,10 @@ public class QuindioExpress {
         this.listaPaquetesPendientes = new LinkedList<>();
         this.mapaPaquetes = new HashMap<>();
         this.municipios = new HashSet<>();
-        this.municipiosOrdenados = new TreeSet();
+        this.municipiosOrdenados = new TreeSet<>();
         this.despacharPaquetesPrioridad = new PriorityQueue<>(new ComparadorPorPrioridad());
         this.historialPaquetesEntregados = new ListaSimplementeEnlazada<>();
-        this.mapaRepartidores = new HashMap();
+        this.mapaRepartidores = new HashMap<>();
         this.ordenLlegada = new LinkedList<>();
     }
 
@@ -71,6 +71,7 @@ public class QuindioExpress {
         despacharPaquetesPrioridad.add(paquete);
         municipios.add(paquete.getDestino());
         municipiosOrdenados.add(paquete.getDestino());
+        ordenLlegada.add(paquete);
 
         return true;
     }
@@ -174,21 +175,37 @@ public class QuindioExpress {
         // Efectuar proceso de entrega
         repartidor.setDisponible(false);
 
-        mapaPaquetes.remove(codigoPaquete);
+
         listaPaquetesPendientes.remove(paquete);
         ordenLlegada.remove(paquete);
         despacharPaquetesPrioridad.remove(paquete);
-
         historialPaquetesEntregados.agregar(paquete);
 
         repartidor.setDisponible(true);
     }
+    public int cantidadEntregados() {
+        return historialPaquetesEntregados.cantidadElementos();
+    }
 
+    public Paquete obtenerEntregado(int posicion) {
+        return historialPaquetesEntregados.obtener(posicion);
+    }
 
-
-
-
-
-
+    public boolean fueEntregado(String codigo) {
+        for (Paquete p : historialPaquetesEntregados) {
+            if (p.getCodigo().equals(codigo)) return true;
+        }
+        return false;
+    }
+    public String historialComoTexto() {
+        StringBuilder sb = new StringBuilder();
+        boolean primero = true;
+        for (Paquete p : historialPaquetesEntregados) {
+            if (!primero) sb.append(" → ");
+            sb.append(p.getCodigo());
+            primero = false;
+        }
+        return sb.toString();
+    }
 
 }
