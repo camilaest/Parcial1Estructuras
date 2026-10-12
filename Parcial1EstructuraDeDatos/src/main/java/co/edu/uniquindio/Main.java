@@ -28,9 +28,10 @@ public class Main {
                     6. Atender paquete por orden de llegada 
                     7. Despachar siguiente paquete prioritario 
                     8. Asignar paquete a repartidor y realizar entrega
-                    9. Demostrar ordenamientos alternativos ????
+                    9. Demostrar ordenamientos alternativos (falta por prioridad y por codigo)
                     10. Análisis
-                    11. Salir
+                    11. Historial
+                    12. Salir
                     
                     Seleccione una opción:
                     """;
@@ -55,7 +56,8 @@ public class Main {
                     case 8 -> asignarYEntregarGUI(sistema);
                     case 9 -> mostrarComparadoresGUI(sistema);
                     case 10 -> mostrarAnalisisGUI(sistema);
-                    case 11 -> salir = true;
+                    case 11 -> menuHistorial(sistema);
+                    case 12 -> salir = true;
                     default -> JOptionPane.showMessageDialog(null, "Opción no válida. Intente de nuevo.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException e) {
@@ -323,6 +325,102 @@ public class Main {
                         + "Prioridad: " + masPesado.getPrioridad() + "\n"
                         + "Tiempo estimado: " + masPesado.getTiempoEstimado() + " min",
                 "Paquete más pesado", JOptionPane.INFORMATION_MESSAGE);
+    }
+    public static void menuHistorial(QuindioExpress sistema) {
+        String[] opciones = {
+                "Cantidad de entregados",
+                "Obtener entregado por posición",
+                "Verificar si fue entregado",
+                "Mostrar historial completo",
+                "Volver"
+        };
+        boolean salir = false;
+
+        while (!salir) {
+            int eleccion = mostrarMenuVertical("Historial de entregas", opciones);
+
+            switch (eleccion) {
+                case 0 -> mostrarCantidadEntregados(sistema);
+                case 1 -> mostrarEntregadoPorPosicion(sistema);
+                case 2 -> verificarEntregado(sistema);
+                case 3 -> mostrarHistorialCompleto(sistema);
+                case 4, -1 -> salir = true;
+            }
+        }
+    }
+
+    private static void  mostrarCantidadEntregados(QuindioExpress sistema) {
+        JOptionPane.showMessageDialog(null,
+                "Paquetes entregados: " + sistema.cantidadEntregados(),
+                "Historial", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static void mostrarEntregadoPorPosicion(QuindioExpress sistema) {
+        int cantidad = sistema.cantidadEntregados();
+        if (cantidad == 0) {
+            JOptionPane.showMessageDialog(null, "El historial está vacío",
+                    "Historial", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String texto = JOptionPane.showInputDialog("Posición (0 a " + (cantidad - 1)+ "):");
+        if (texto == null) return;
+
+        int posicion;
+        try {
+            posicion = Integer.parseInt(texto.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar un número entero",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (posicion < 0 || posicion > (cantidad- 1)) {
+            JOptionPane.showMessageDialog(null, "La posición debe estar entre 0 y " + (cantidad - 1),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Paquete p = sistema.obtenerEntregado(posicion );
+        JOptionPane.showMessageDialog(null,
+                "Entregado en la posición " + posicion + ":\n\n"
+                        + "Código: " + p.getCodigo() + "\n"
+                        + "Destino: " + p.getDestino() + "\n"
+                        + "Peso: " + p.getPeso() + " kg",
+                "Historial", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static void verificarEntregado(QuindioExpress sistema) {
+        String codigo = JOptionPane.showInputDialog("Código del paquete:");
+        if (codigo == null) return;
+        codigo = codigo.trim().toUpperCase();
+
+        if (codigo.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El código no puede estar vacío",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean entregado = sistema.fueEntregado(codigo);
+        JOptionPane.showMessageDialog(null,
+                entregado ? "El paquete " + codigo + " SÍ fue entregado"
+                        : "El paquete " + codigo + " NO aparece en el historial",
+                "Historial", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static void mostrarHistorialCompleto(QuindioExpress sistema) {
+        if (sistema.cantidadEntregados() == 0) {
+            JOptionPane.showMessageDialog(null, "El historial está vacío",
+                    "Historial", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JTextArea area = new JTextArea(sistema.historialComoTexto(), 6, 40);
+        area.setEditable(false);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        JOptionPane.showMessageDialog(null, new JScrollPane(area),
+                "Historial de entregas", JOptionPane.INFORMATION_MESSAGE);
     }
     private static int mostrarMenuVertical(String titulo, String[] opciones) {
         final int[] seleccion = {-1};                       // -1 si cierran con la X
