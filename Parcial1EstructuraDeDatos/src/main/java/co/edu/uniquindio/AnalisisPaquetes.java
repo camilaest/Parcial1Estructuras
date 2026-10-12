@@ -93,6 +93,7 @@ public class AnalisisPaquetes {
      *
      */
     public static int busquedaBinaria(List<Paquete> ordenados, String codigo) {
+
         return busquedaBinaria(ordenados, codigo, 0, ordenados.size() - 1);
     }
 

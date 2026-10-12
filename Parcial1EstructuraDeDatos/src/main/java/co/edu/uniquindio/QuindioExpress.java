@@ -18,7 +18,7 @@ public class QuindioExpress {
     private final Queue<Paquete> ordenLlegada;
 
     //el historial es respetando el orden de entrega
-    private final Collection<Paquete> historialPaquetesEntregados;
+    private final ListaSimplementeEnlazada<Paquete> historialPaquetesEntregados;
 
     private final Map<String, Repartidor> mapaRepartidores;
 
@@ -26,10 +26,10 @@ public class QuindioExpress {
         this.listaPaquetesPendientes = new LinkedList<>();
         this.mapaPaquetes = new HashMap<>();
         this.municipios = new HashSet<>();
-        this.municipiosOrdenados = new TreeSet<>();
+        this.municipiosOrdenados = new TreeSet();
         this.despacharPaquetesPrioridad = new PriorityQueue<>(new ComparadorPorPrioridad());
         this.historialPaquetesEntregados = new ListaSimplementeEnlazada<>();
-        this.mapaRepartidores = new HashMap<>();
+        this.mapaRepartidores = new HashMap();
         this.ordenLlegada = new LinkedList<>();
     }
 
@@ -37,7 +37,7 @@ public class QuindioExpress {
         return listaPaquetesPendientes;
     }
 
-    public Collection<Paquete> getHistorialPaquetesEntregados() {
+    public ListaSimplementeEnlazada<Paquete> getHistorialPaquetesEntregados() {
         return historialPaquetesEntregados;
     }
 
@@ -69,7 +69,6 @@ public class QuindioExpress {
         mapaPaquetes.put(paquete.getCodigo(), paquete);
         listaPaquetesPendientes.add(paquete);
         despacharPaquetesPrioridad.add(paquete);
-        ordenLlegada.add(paquete);
         municipios.add(paquete.getDestino());
         municipiosOrdenados.add(paquete.getDestino());
 
@@ -96,6 +95,26 @@ public class QuindioExpress {
     public Set<String> obtenerMunicipiosOrdenados() {
         return municipiosOrdenados;
     }
+    public double pesoTotalPorMunicipio(String municipio) {
+        return AnalisisPaquetes.pesoTotalPorMunicipio(listaPaquetesPendientes, municipio );
+    }
+    public int numeroPaquetesPrioridadMinima(int prioridad){
+        if(prioridad > 5){
+            throw new IllegalArgumentException("Prioridad mayor que 5");
+        }
+        return AnalisisPaquetes.numeroPaquetesPrioridadMinima(listaPaquetesPendientes, prioridad);
+    }
+    public Paquete paqueteMayorPeso(){
+        if(listaPaquetesPendientes.isEmpty()){
+            return null;
+        }
+        return AnalisisPaquetes.paqueteMayorPeso(listaPaquetesPendientes);
+    }
+    public int busquedaBinaria(String codigo) {
+        List<Paquete> ordenados = new ArrayList<>(listaPaquetesPendientes);
+        Collections.sort(ordenados);
+        return AnalisisPaquetes.busquedaBinaria(ordenados, codigo);
+    }
 
     //Este método nos permite agruar los paquetes según el municipio destino
     public Map<String, List<Paquete>> agruparPaquetesPorMunicipio() {
@@ -117,16 +136,12 @@ public class QuindioExpress {
         Paquete paqueteAtendido = despacharPaquetesPrioridad.poll();
 
         if (paqueteAtendido != null) {
-            listaPaquetesPendientes.remove(paqueteAtendido);
-            ordenLlegada.remove(paqueteAtendido);
-            mapaPaquetes.remove(paqueteAtendido.getCodigo());
-
+            listaPaquetesPendientes.remove(paqueteAtendido);     // Lo remueve de pendientes
             historialPaquetesEntregados.agregar(paqueteAtendido);
         }
 
         return paqueteAtendido;
     }
-
     public Paquete atenderPorOrdenLlegada() {
         Paquete p = ordenLlegada.poll();
         if (p != null) {
@@ -168,7 +183,6 @@ public class QuindioExpress {
 
         repartidor.setDisponible(true);
     }
-
 
 
 

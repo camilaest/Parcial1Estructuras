@@ -1,6 +1,7 @@
 package co.edu.uniquindio;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,8 @@ public class Main {
                     7. Despachar siguiente paquete prioritario 
                     8. Asignar paquete a repartidor y realizar entrega
                     9. Demostrar ordenamientos alternativos ????
-                    10. Salir
+                    10. Análisis
+                    11. Salir
                     
                     Seleccione una opción:
                     """;
@@ -52,7 +54,8 @@ public class Main {
                     case 7 -> despacharPrioritarioGUI(sistema);
                     case 8 -> asignarYEntregarGUI(sistema);
                     case 9 -> mostrarComparadoresGUI(sistema);
-                    case 10 -> salir = true;
+                    case 10 -> mostrarAnalisisGUI(sistema);
+                    case 11 -> salir = true;
                     default -> JOptionPane.showMessageDialog(null, "Opción no válida. Intente de nuevo.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException e) {
@@ -220,8 +223,134 @@ public class Main {
 
         JOptionPane.showMessageDialog(null, sb.toString(), "Demostración de Comparator", JOptionPane.INFORMATION_MESSAGE);
     }
+    public static void mostrarAnalisisGUI(QuindioExpress sistema) {
 
+        String[] opciones = {"Consultar peso total por municipio", "Búsqueda binaria por código", "Cantidad de paquetes mayores o iguales a una prioridad", "Paquete más pesado", "Volver"};
+        boolean salir = false;
 
+        while (!salir) {
+            int eleccion = mostrarMenuVertical("Análisis de paquetes", opciones);
+
+            switch (eleccion) {
+                case 0 -> pesoTotalMunicipioGUI(sistema);
+                case 1 -> busquedaBinariaGUI(sistema);
+                case 2 -> paquetesPrioridadGUI(sistema);
+                case 3 -> pesoMayorGUI(sistema);
+                case 4, JOptionPane.CLOSED_OPTION -> salir = true; // "Volver" o cerrar con la X
+            }
+        }
+    }
+    public static void pesoTotalMunicipioGUI(QuindioExpress sistema) {
+        String municipio = JOptionPane.showInputDialog("Municipio:");
+        if (municipio == null) return;            // canceló
+        municipio = municipio.trim();
+
+        if (municipio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El municipio no puede estar vacío",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double total = sistema.pesoTotalPorMunicipio(municipio);
+
+        JOptionPane.showMessageDialog(null,
+                String.format("Peso total hacia %s: %.1f kg", municipio, total),
+                "Peso por municipio", JOptionPane.INFORMATION_MESSAGE);
+
+    }
+    private static void busquedaBinariaGUI(QuindioExpress sistema) {
+        String codigo = JOptionPane.showInputDialog("Código del paquete:");
+        if (codigo == null) return;               // canceló
+        codigo = codigo.trim().toUpperCase();
+
+        if (codigo.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El código no puede estar vacío",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int posicion = sistema.busquedaBinaria(codigo);
+
+        if (posicion == -1) {
+            JOptionPane.showMessageDialog(null, "El paquete " + codigo + " no existe",
+                    "Búsqueda binaria", JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "El paquete " + codigo + " está en la posición " + posicion
+                            + " (índice, empezando en 0)",
+                    "Búsqueda binaria", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    public static void paquetesPrioridadGUI(QuindioExpress sistema){
+        String texto = JOptionPane.showInputDialog("Prioridad mínima (0-5):");
+        if (texto == null) return;                // canceló
+
+        int minima;
+        try {
+            minima = Integer.parseInt(texto.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar un número entero",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (minima < 0 || minima > 5) {
+            JOptionPane.showMessageDialog(null, "La prioridad debe estar entre 0 y 5",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int cantidad = sistema.numeroPaquetesPrioridadMinima( minima);
+
+        JOptionPane.showMessageDialog(null,
+                "Paquetes con prioridad >= " + minima + ": " + cantidad,
+                "Prioridad", JOptionPane.INFORMATION_MESSAGE);
+    }
+    public static void pesoMayorGUI(QuindioExpress sistema){
+        if (sistema.paqueteMayorPeso() == null){
+            JOptionPane.showMessageDialog(null, "No hay paquetes registrados",
+                    "Paquete más pesado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Paquete masPesado = sistema.paqueteMayorPeso();
+
+        JOptionPane.showMessageDialog(null,
+                "Paquete más pesado:\n\n"
+                        + "Código: " + masPesado.getCodigo() + "\n"
+                        + "Destino: " + masPesado.getDestino() + "\n"
+                        + "Peso: " + masPesado.getPeso() + " kg\n"
+                        + "Prioridad: " + masPesado.getPrioridad() + "\n"
+                        + "Tiempo estimado: " + masPesado.getTiempoEstimado() + " min",
+                "Paquete más pesado", JOptionPane.INFORMATION_MESSAGE);
+    }
+    private static int mostrarMenuVertical(String titulo, String[] opciones) {
+        final int[] seleccion = {-1};                       // -1 si cierran con la X
+
+        JDialog dialogo = new JDialog((Frame) null, titulo, true);   // true = modal
+        dialogo.setLayout(new BorderLayout(10, 10));
+
+        JPanel panel = new JPanel(new GridLayout(opciones.length, 1, 0, 8)); // 1 columna
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 15, 20));
+
+        for (int i = 0; i < opciones.length; i++) {
+            final int indice = i;
+            JButton boton = new JButton(opciones[i]);
+            boton.addActionListener(e -> {
+                seleccion[0] = indice;
+                dialogo.dispose();
+            });
+            panel.add(boton);
+        }
+
+        dialogo.add(new JLabel("¿Qué desea hacer?", SwingConstants.CENTER), BorderLayout.NORTH);
+        dialogo.add(panel, BorderLayout.CENTER);
+        dialogo.pack();
+        dialogo.setLocationRelativeTo(null);                // centrado en pantalla
+        dialogo.setVisible(true);                           // se detiene aquí hasta que se cierre
+
+        return seleccion[0];
+    }
     // CARGA DE DATOS INICIALES (30 paquetes, 6 repartidores)
 
 
