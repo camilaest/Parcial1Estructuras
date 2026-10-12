@@ -140,7 +140,14 @@ public class QuindioExpress {
         return AnalisisPaquetes.busquedaBinaria(ordenados, codigo);
     }
 
-    //Este método nos permite agruar los paquetes según el municipio destino
+    /**
+     * Agrupa los paquetes registrados según su municipio de destino.
+     * Recorre todos los paquetes en el mapa y genera una estructura donde cada clave
+     * es un municipio y su valor es la lista de paquetes asignados a dicho destino.
+     *
+     * @return Un mapa (Map) que relaciona cada municipio de destino
+     * con su correspondiente lista de paquetes
+     */
     public Map<String, List<Paquete>> agruparPaquetesPorMunicipio() {
         Map<String, List<Paquete>> agrupamiento = new HashMap<>();
 
@@ -155,7 +162,13 @@ public class QuindioExpress {
         return agrupamiento;
     }
 
-    //Este metodo se encarga de despachar el paquete con mayor prioridad y agregarlo al hostorial de entregados
+    /**
+     * Despacha el paquete de mayor prioridad en la cola de procesamiento.
+     * Al atendenderlo, lo remueve de la lista de paquetes pendientes y lo agrega
+     * al historial de paquetes entregados.
+     *
+     * @return El paquete despachado, o null si no hay paquetes para procesar
+     */
     public Paquete despacharSiguientePaquete() {
         Paquete paqueteAtendido = despacharPaquetesPrioridad.poll();
 
@@ -166,6 +179,14 @@ public class QuindioExpress {
 
         return paqueteAtendido;
     }
+
+    /**
+     * Atiende el siguiente paquete respetando estrictamente su orden de llegada.
+     * Retira el paquete de la cola de orden de llegada y actualiza simultáneamente
+     * la lista de pendientes y la cola de prioridad.
+     *
+     * @return El paquete atendido, o null si la cola está vacía
+     */
     public Paquete atenderPorOrdenLlegada() {
         Paquete p = ordenLlegada.poll();
         if (p != null) {
@@ -191,6 +212,16 @@ public class QuindioExpress {
         }
     }
 
+    /**
+     * Asigna y gestiona la entrega de un paquete a un repartidor específico.
+     * Valida la existencia del paquete y del repartidor, que el repartidor esté disponible
+     * y que la zona asignada al repartidor coincida con el municipio de destino del paquete.
+     *
+     * @param codigoPaquete Código único del paquete a entregar
+     * @param cedulaRepartidor Cédula del repartidor asignado
+     * @throws IllegalArgumentException Si el paquete o el repartidor no existen, o si la zona no coincide
+     * @throws IllegalStateException Si el repartidor no se encuentra disponible
+     */
     public void asignarYEntregarPaquete(String codigoPaquete, String cedulaRepartidor) {
         Paquete paquete = mapaPaquetes.get(codigoPaquete);
         if (paquete == null) {
@@ -225,6 +256,11 @@ public class QuindioExpress {
 
         repartidor.setDisponible(true);
     }
+
+    /**
+     * Obtiene el total de paquetes que han sido entregados y registrados en el historial
+     * @return Número entero que representa la cantidad de elementos almacenados en el historial de entregados
+     */
     public int cantidadEntregados() {
         return historialPaquetesEntregados.cantidadElementos();
     }

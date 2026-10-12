@@ -69,7 +69,13 @@ public class Paquete implements Comparable<Paquete>{
                 '}';
     }
 
-
+    /**
+     * Compara este paquete con otro según su código alfabéticamente.
+     *
+     * @param o Paquete con el cual se va a comparar
+     * @return Un valor negativo, cero o un valor positivo según si el código de este
+     * paquete es menor, igual o mayor que el del paquete especificado
+     */
     @Override
     public int compareTo(Paquete o) {
         return codigo.compareTo(o.getCodigo());
