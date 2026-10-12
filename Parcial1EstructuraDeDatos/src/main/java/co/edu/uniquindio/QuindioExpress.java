@@ -96,21 +96,44 @@ public class QuindioExpress {
     public Set<String> obtenerMunicipiosOrdenados() {
         return municipiosOrdenados;
     }
+
+    /**
+     * Método recursivo que me permite ver el peso total de un municipio
+     * @param municipio
+     * @return peso total del municipio ingresado
+     */
     public double pesoTotalPorMunicipio(String municipio) {
         return AnalisisPaquetes.pesoTotalPorMunicipio(listaPaquetesPendientes, municipio );
     }
+
+    /**
+     * Método recursivo de análisis en el que puedo visualizar la cantidad de paquetes que tienen una prioridad igual o mayor a la ingresada
+     * @param prioridad
+     * @return cantidad de paquetes
+     */
     public int numeroPaquetesPrioridadMinima(int prioridad){
         if(prioridad > 5){
             throw new IllegalArgumentException("Prioridad mayor que 5");
         }
         return AnalisisPaquetes.numeroPaquetesPrioridadMinima(listaPaquetesPendientes, prioridad);
     }
+
+    /**
+     * Método de divide y vencerás de análisis que me permite ver el paquete con mayor peso dentro de los paquetes pedientes
+     * @return Paquete
+     */
     public Paquete paqueteMayorPeso(){
         if(listaPaquetesPendientes.isEmpty()){
             return null;
         }
         return AnalisisPaquetes.paqueteMayorPeso(listaPaquetesPendientes);
     }
+
+    /**
+     * Método de análisis que me permite buscar un paquete por su código, devolviendo la posición en la que se encuentra
+     * @param codigo
+     * @return posicion
+     */
     public int busquedaBinaria(String codigo) {
         List<Paquete> ordenados = new ArrayList<>(listaPaquetesPendientes);
         Collections.sort(ordenados);
@@ -152,6 +175,11 @@ public class QuindioExpress {
         return p;
     }
 
+    /**
+     * Método del historial que me permite eliminar un paquete de la lista enlazada sin importar en qué parte de la lista esté
+     * @param posicionPaquete
+     * @return boolean
+     */
     public boolean eliminarDelHistorial(int posicionPaquete) {
         Paquete p = historialPaquetesEntregados.obtener(posicionPaquete);
 
@@ -201,16 +229,31 @@ public class QuindioExpress {
         return historialPaquetesEntregados.cantidadElementos();
     }
 
+    /**
+     * Método de historial que me permite ver el paquete que está en una posición deternminada
+     * @param posicion
+     * @return Paquete en la posición ingresada
+     */
     public Paquete obtenerEntregado(int posicion) {
         return historialPaquetesEntregados.obtener(posicion);
     }
 
+    /**
+     * Método de historial que me permite determinar si un paquete ya fue entregado o no
+     * @param codigo
+     * @return boolean
+     */
     public boolean fueEntregado(String codigo) {
         for (Paquete p : historialPaquetesEntregados) {
             if (p.getCodigo().equals(codigo)) return true;
         }
         return false;
     }
+
+    /**
+     * Método para mostrar historial en el main en formato texto
+     * @return String lista enlazada
+     */
     public String historialComoTexto() {
         StringBuilder sb = new StringBuilder();
         boolean primero = true;
