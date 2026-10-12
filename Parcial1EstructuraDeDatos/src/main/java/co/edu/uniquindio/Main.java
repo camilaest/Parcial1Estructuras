@@ -221,6 +221,8 @@ public class Main {
         JOptionPane.showMessageDialog(null, sb.toString(), "Demostración de Comparator", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    
+
 
     // CARGA DE DATOS INICIALES (30 paquetes, 6 repartidores)
 

@@ -136,6 +136,19 @@ public class QuindioExpress {
         return p;
     }
 
+    public boolean eliminarDelHistorial(String codigoPaquete) {
+        //Utilizamos un paquete auxiliar
+        Paquete paqueteABuscar = new Paquete();
+        paqueteABuscar.setCodigo(codigoPaquete);
+
+        try {
+            historialPaquetesEntregados.eliminar(paqueteABuscar);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
     public void asignarYEntregarPaquete(String codigoPaquete, String cedulaRepartidor) {
         Paquete paquete = mapaPaquetes.get(codigoPaquete);
         if (paquete == null) {
@@ -155,6 +168,9 @@ public class QuindioExpress {
             throw new IllegalArgumentException("La zona del repartidor (" + repartidor.getZona() +
                     ") no coincide con el destino del paquete (" + paquete.getDestino() + ").");
         }
+
+
+
 
         // Efectuar proceso de entrega
         repartidor.setDisponible(false);
